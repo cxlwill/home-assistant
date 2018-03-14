@@ -26,7 +26,7 @@ from homeassistant.components.light import (
     Light, PLATFORM_SCHEMA)
 import homeassistant.helpers.config_validation as cv
 
-REQUIREMENTS = ['yeelight==0.3.3']
+REQUIREMENTS = ['yeelight==0.4.0']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -174,11 +174,6 @@ class YeelightLight(Light):
     def effect_list(self):
         """Return the list of supported effects."""
         return YEELIGHT_EFFECT_LIST
-
-    @property
-    def unique_id(self) -> str:
-        """Return the ID of this light."""
-        return "{}.{}".format(self.__class__, self._ipaddr)
 
     @property
     def color_temp(self) -> int:

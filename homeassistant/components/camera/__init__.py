@@ -91,13 +91,13 @@ def async_snapshot(hass, filename, entity_id=None):
 @bind_hass
 @asyncio.coroutine
 def async_get_image(hass, entity_id, timeout=10):
-    """Fetch a image from a camera entity."""
+    """Fetch an image from a camera entity."""
     websession = async_get_clientsession(hass)
     state = hass.states.get(entity_id)
 
     if state is None:
         raise HomeAssistantError(
-            "No entity '{0}' for grab a image".format(entity_id))
+            "No entity '{0}' for grab an image".format(entity_id))
 
     url = "{0}{1}".format(
         hass.config.api.base_url,
@@ -264,9 +264,9 @@ class Camera(Entity):
                                  'boundary=--frameboundary')
         yield from response.prepare(request)
 
-        def write(img_bytes):
+        async def write(img_bytes):
             """Write image to stream."""
-            response.write(bytes(
+            await response.write(bytes(
                 '--frameboundary\r\n'
                 'Content-Type: {}\r\n'
                 'Content-Length: {}\r\n\r\n'.format(
@@ -282,15 +282,14 @@ class Camera(Entity):
                     break
 
                 if img_bytes and img_bytes != last_image:
-                    write(img_bytes)
+                    yield from write(img_bytes)
 
                     # Chrome seems to always ignore first picture,
                     # print it twice.
                     if last_image is None:
-                        write(img_bytes)
+                        yield from write(img_bytes)
 
                     last_image = img_bytes
-                    yield from response.drain()
 
                 yield from asyncio.sleep(.5)
 

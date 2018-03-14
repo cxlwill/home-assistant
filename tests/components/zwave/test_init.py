@@ -198,7 +198,7 @@ def test_device_entity(hass, mock_openzwave):
     yield from hass.async_block_till_done()
 
     assert not device.should_poll
-    assert device.unique_id == "ZWAVE-10-11"
+    assert device.unique_id == "10-11"
     assert device.name == 'Mock Node Sensor'
     assert device.device_state_attributes[zwave.ATTR_POWER] == 50.123
 
@@ -309,7 +309,7 @@ def test_value_discovery_existing_entity(hass, mock_openzwave):
         'current_temperature'] is None
 
     def mock_update(self):
-        self.hass.async_add_job(self.async_update_ha_state)
+        self.hass.add_job(self.async_update_ha_state)
 
     with patch.object(zwave.node_entity.ZWaveBaseEntity,
                       'maybe_schedule_update', new=mock_update):
@@ -356,7 +356,7 @@ def test_power_schemes(hass, mock_openzwave):
         'switch.mock_node_mock_value').attributes
 
     def mock_update(self):
-        self.hass.async_add_job(self.async_update_ha_state)
+        self.hass.add_job(self.async_update_ha_state)
 
     with patch.object(zwave.node_entity.ZWaveBaseEntity,
                       'maybe_schedule_update', new=mock_update):
@@ -899,7 +899,7 @@ class TestZWaveServices(unittest.TestCase):
         assert value.label == "New Label"
 
     def test_set_poll_intensity_enable(self):
-        """Test zwave set_poll_intensity service, succsessful set."""
+        """Test zwave set_poll_intensity service, successful set."""
         node = MockNode(node_id=14)
         value = MockValue(index=12, value_id=123456, poll_intensity=0)
         node.values = {123456: value}
