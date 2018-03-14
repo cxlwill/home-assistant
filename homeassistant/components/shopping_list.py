@@ -43,10 +43,10 @@ def async_setup(hass, config):
     hass.http.register_view(ClearCompletedItemsView)
 
     hass.components.conversation.async_register(INTENT_ADD_ITEM, [
-        'Add [the] [a] [an] {item} to my shopping list',
+        '添加 [the] [a] [an] {item} 到清单',
     ])
     hass.components.conversation.async_register(INTENT_LAST_ITEMS, [
-        'What is on my shopping list'
+        '清单里有什么'
     ])
 
     yield from hass.components.frontend.async_register_built_in_panel(
@@ -125,7 +125,7 @@ class AddItemIntent(intent.IntentHandler):
 
         response = intent_obj.create_response()
         response.async_set_speech(
-            "I've added {} to your shopping list".format(item))
+            "{} 已添加".format(item))
         intent_obj.hass.bus.async_fire(EVENT)
         return response
 
@@ -146,10 +146,10 @@ class ListTopItemsIntent(intent.IntentHandler):
 
         if not items:
             response.async_set_speech(
-                "There are no items on your shopping list")
+                "清单是空的")
         else:
             response.async_set_speech(
-                "These are the top {} items on your shopping list: {}".format(
+                "你的清单前 {} 项为：{}".format(
                     min(len(items), 5),
                     ', '.join(itm['name'] for itm in reversed(items))))
         return response
